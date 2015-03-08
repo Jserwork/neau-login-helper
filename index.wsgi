@@ -16,7 +16,7 @@ def JwcLoginHander():
   while(result['errcode'] == 3):
     result = JwcLoginHelper(stuid, pswd, host).login()
 
-  return json.dumps(result)
+  return result
 
 @get("/rj")
 def RuijieLoginHandler():
