@@ -11,9 +11,6 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-import tornado.ioloop
-import tornado.web
-
 class JwcLoginHelper:
 
   CodePath  = "/validateCodeAction.do"
@@ -116,27 +113,3 @@ class JwcLoginHelper:
         maxHitRate = v
         hitChar = k
     return codeHash[hitChar]
-
-class LoginHandler(tornado.web.RequestHandler):
-  def get(self):
-    stuid = self.get_argument("stuid")
-    pswd  = self.get_argument("pswd")
-    host  = self.get_argument("host")
-
-    if stuid == None or pswd == None or host == None:
-      self.write("Invalid params")
-      return
-
-    result = JwcLoginHelper(stuid, pswd, host).login()
-    while(result['errcode'] == 3):
-      result = JwcLoginHelper(stuid, pswd, host).login()
-
-    self.write(json.dumps(result))
-
-application = tornado.web.Application([
-    (r"/", LoginHandler),
-])
-
-if __name__ == '__main__':
-  application.listen(8888)
-  tornado.ioloop.IOLoop.instance().start()
