@@ -22,6 +22,4 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-EXPOSE 7777
-
 CMD ["/usr/bin/supervisord"]
