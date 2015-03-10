@@ -3,6 +3,7 @@ from RuijieHelper import RuijieHelper
 
 import tornado.ioloop
 import tornado.web
+import json
 
 class JwcLoginHandler(tornado.web.RequestHandler):
   def get(self):

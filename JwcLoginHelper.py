@@ -4,7 +4,6 @@ import urllib
 import urllib2
 from PIL import Image
 from jwcfonts import code, codeCount, codeWidth, codePrefix, codeHash, codeLocPrefix
-import json
 
 import io
 import sys
