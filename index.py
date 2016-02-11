@@ -1,8 +1,9 @@
 from JwcLoginHelper import JwcLoginHelper
 from RuijieHelper import RuijieHelper
 
-import tornado.ioloop
+# import tornado.ioloop
 import tornado.web
+import tornado.wsgi
 import json
 
 class JwcLoginHandler(tornado.web.RequestHandler):
@@ -38,5 +39,10 @@ application = tornado.web.Application([
 ])
 
 if __name__ == '__main__':
-  application.listen(18080)
-  tornado.ioloop.IOLoop.instance().start()
+    # wsgi_app = tornado.wsgi.WSGIAdapter(application)
+
+    from bae.core.wsgi import WSGIApplication
+    application = WSGIApplication(application)
+
+    # application.listen(18080)
+    # tornado.ioloop.IOLoop.instance().start()
