@@ -41,6 +41,6 @@ app = tornado.wsgi.WSGIApplication([
 if __name__ == '__main__':
     app.listen(18080)
     tornado.ioloop.IOLoop.instance().start()
-else
+else:
     from bae.core.wsgi import WSGIApplication
     application = WSGIApplication(app)
