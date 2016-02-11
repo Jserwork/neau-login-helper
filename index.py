@@ -1,48 +1,39 @@
+from bottle import *
+
 from JwcLoginHelper import JwcLoginHelper
 from RuijieHelper import RuijieHelper
 
-# import tornado.ioloop
-import tornado.web
-import tornado.wsgi
-import json
+@get("/jwc")
+def JwcLoginHander():
+  stuid = request.params.get('stuid')
+  pswd = request.params.get('pswd')
+  host = request.params.get('host')
 
-class JwcLoginHandler(tornado.web.RequestHandler):
-  def get(self):
-    stuid = self.get_argument("stuid")
-    pswd  = self.get_argument("pswd")
-    host  = self.get_argument("host")
+  if stuid == None or pswd == None or host == None:
+    return "Invalid params"
 
-    if stuid == None or pswd == None or host == None:
-      self.write("Invalid params")
-      return
-
+  result = JwcLoginHelper(stuid, pswd, host).login()
+  while(result['errcode'] == 3):
     result = JwcLoginHelper(stuid, pswd, host).login()
-    while(result['errcode'] == 3):
-      result = JwcLoginHelper(stuid, pswd, host).login()
 
-    self.write(json.dumps(result))
+  return result
 
-class RjLoginHandler(tornado.web.RequestHandler):
-  def get(self):
-    stuid = self.get_argument("stuid")
-    pswd  = self.get_argument("pswd")
+@get("/rj")
+def RuijieLoginHandler():
+  stuid = request.params.get('stuid')
+  pswd = request.params.get('pswd')
 
-    if stuid == None or pswd == None:
-      self.write("Invalid params")
-      return
+  if stuid == None or pswd == None:
+    return "Invalid params"
 
-    self.write(RuijieHelper(stuid, pswd).login())
-
-application = tornado.web.Application([
-    (r"/jwc", JwcLoginHandler),
-    (r"/rj", RjLoginHandler),
-])
+  return RuijieHelper(stuid, pswd).login()
 
 if __name__ == '__main__':
-    wsgi_app = tornado.wsgi.WSGIAdapter(application)
-
-    from bae.core.wsgi import WSGIApplication
-    application = WSGIApplication(wsgi_app)
-
-    # application.listen(18080)
-    # tornado.ioloop.IOLoop.instance().start()
+  debug(True)
+  run(host='localhost', port=80, reloader=True)
+else:
+  app = default_app()
+  # import sae
+  # application = sae.create_wsgi_app(app)
+  from bae.core.wsgi import WSGIApplication
+  application = WSGIApplication(app)
