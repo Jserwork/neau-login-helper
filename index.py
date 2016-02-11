@@ -39,10 +39,10 @@ application = tornado.web.Application([
 ])
 
 if __name__ == '__main__':
-    # wsgi_app = tornado.wsgi.WSGIAdapter(application)
+    wsgi_app = tornado.wsgi.WSGIAdapter(application)
 
     from bae.core.wsgi import WSGIApplication
-    application = WSGIApplication(application)
+    application = WSGIApplication(wsgi_app)
 
     # application.listen(18080)
     # tornado.ioloop.IOLoop.instance().start()
