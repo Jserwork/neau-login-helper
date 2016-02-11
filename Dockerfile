@@ -15,6 +15,6 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-EXPOSE 80
+EXPOSE 18080
 
 CMD ["/usr/bin/supervisord"]
