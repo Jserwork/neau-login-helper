@@ -33,7 +33,12 @@ class RjLoginHandler(tornado.web.RequestHandler):
 
     self.write(RuijieHelper(stuid, pswd).login())
 
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write("Hello, world! - Tornado\n")
+
 app = tornado.wsgi.WSGIApplication([
+    (r"/", MainHandler),
     (r"/jwc", JwcLoginHandler),
     (r"/rj", RjLoginHandler),
 ])
