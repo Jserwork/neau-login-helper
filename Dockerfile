@@ -1,20 +1,20 @@
-FROM python:2
+FROM python:2-alpine3.6
 
-RUN apt-get update
+RUN apk update
+RUN apk add build-base
+RUN apk add jpeg-dev
+RUN apk add zlib-dev
+ENV LIBRARY_PATH=/lib:/usr/lib
 
-RUN apt-get install -y supervisor
+ENV PYTHONUNBUFFERED 1
 
 RUN pip install tornado
 RUN pip install pillow
-
-RUN mkdir -p /var/log/supervisor
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY . /usr/src/app
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
 EXPOSE 18080
 
-CMD ["/usr/bin/supervisord"]
+CMD ["python2", "index.py"]
