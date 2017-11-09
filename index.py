@@ -11,14 +11,15 @@ class JwcLoginHandler(tornado.web.RequestHandler):
     stuid = self.get_argument("stuid")
     pswd  = self.get_argument("pswd")
     host  = self.get_argument("host")
+    enable_proxy = self.get_argument('enableProxy', default=False)
 
     if stuid == None or pswd == None or host == None:
       self.write("Invalid params")
       return
 
-    result = JwcLoginHelper(stuid, pswd, host).login()
+    result = JwcLoginHelper(stuid, pswd, host, enable_proxy).login()
     while(result['errcode'] == 3):
-      result = JwcLoginHelper(stuid, pswd, host).login()
+      result = JwcLoginHelper(stuid, pswd, host, enable_proxy).login()
 
     self.write(json.dumps(result))
 

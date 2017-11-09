@@ -15,10 +15,19 @@ class JwcLoginHelper:
   CodePath  = "/validateCodeAction.do"
   VerifyPath = "/loginAction.do"
 
-  def __init__(self, stuid, pswd, host):
+  def __init__(self, stuid, pswd, host, enable_proxy):
     self.stuid = stuid
     self.pswd  = pswd
     self.host = host
+
+    proxy_handler = urllib2.ProxyHandler({"http" : 'http://neauproxy.feit.me:6000'})  
+    null_proxy_handler = urllib2.ProxyHandler({}) 
+
+    if enable_proxy:
+        opener = urllib2.build_opener(proxy_handler)
+    else:
+        opener = urllib2.build_opener(null_proxy_handler)
+    urllib2.install_opener(opener)
 
   # 0 -- success  1 -- connectError  2 -- identifyError  3 -- codeError   
   def login(self):
@@ -41,6 +50,7 @@ class JwcLoginHelper:
     headers = {'Cookie': self.cookie}
     data = urllib.urlencode(params)
     req = urllib2.Request(self.host + self.VerifyPath, data, headers)
+
     try:
       res = urllib2.urlopen(req)
     except:
