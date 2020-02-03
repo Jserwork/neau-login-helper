@@ -1,25 +1,24 @@
-ROSTemplateFormatVersion: '2015-09-01'
-Transform: 'Aliyun::Serverless-2018-04-03'
+ROSTemplateFormatVersion: "2015-09-01"
+Transform: "Aliyun::Serverless-2018-04-03"
 Resources:
   neauJwcCaptcha: # service name
-    Type: 'Aliyun::Serverless::Service'
+    Type: "Aliyun::Serverless::Service"
     Properties:
-      Description: 'neau jwc captcha recognition'
-    helloworld: # function name
-      Type: 'Aliyun::Serverless::Function'
+      Description: "neau jwc captcha recognition"
+    main: # function name
+      Type: "Aliyun::Serverless::Function"
       Properties:
         Handler: hello.handler
         Runtime: python2.7
-        CodeUri: './'
+        CodeUri: "./"
         Timeout: 60
 
-  CaptchaGroup: # Api Group
-    Type: 'Aliyun::Serverless::Api'
+  neau-captcha.fc.xiaonei.io:
+    Type: "Aliyun::Serverless::CustomDomain"
     Properties:
-      StageName: RELEASE
-      DefinitionBody:
-        '/neau': # request path
-          post: # http method
-            x-aliyun-apigateway-api-name: captchaRecognition # api name
-            x-aliyun-apigateway-fc:
-              arn: acs:fc:::services/${neauJwcCaptcha.Arn}/functions/${helloworld.Arn}/
+      Protocol: HTTP
+      RouteConfig:
+        routes:
+          "/*":
+            serviceName: neauJwcCaptcha
+            functionName: main

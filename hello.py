@@ -47,8 +47,14 @@ def _getCodeChar(ps, index):
       hitChar = k
   return codeHash[hitChar]
 
-def handler(event, context):
-  req = json.loads(event)
+def handler(environ, start_response):
+   # get request_body
+  try:
+    request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+  except (ValueError):
+    request_body_size = 0
+  request_body = environ['wsgi.input'].read(request_body_size)
+  body = json.loads(request_body)
   # if 'base64' not in req['queryParameters']:
   #   return {
   #     'isBase64Encoded': False,
@@ -59,16 +65,11 @@ def handler(event, context):
 
   # base64 = req['queryParameters']['base64']
 
-  base64 = req['body']
-  if req['isBase64Encoded']:
-    base64 = base64.decode('base64')
+  base64 = body['body']
 
   file_like = cStringIO.StringIO(base64.decode('base64'))
   img = Image.open(file_like)
   result = _identifyCode(img)
-  return {
-    'isBase64Encoded': False,
-    'statusCode': 200,
-    'headers': {},
-    'body': result
-  }
+
+  start_response('200 OK', [('Content-type', 'application/json')])
+  return [json.dumps({ 'code': result })]
